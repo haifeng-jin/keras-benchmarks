@@ -1,0 +1,2 @@
+tensorflow[and-cuda]==2.15.0.post1
+-r keras-common.txt
