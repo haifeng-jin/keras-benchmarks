@@ -4,6 +4,7 @@ import segment_anything
 import torch
 
 import benchmark
+from benchmark import torch_utils
 
 HUGE_URL = (
     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
@@ -51,7 +52,7 @@ def inference(model, input_image, input_point, input_label):
 def run(batch_size=benchmark.SAM_BATCH_SIZE):
     benchmark.download_file(URL, LOCAL)
     model = build_sam(checkpoint=LOCAL).cuda()
-    model = torch.compile(model)
+    model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
     input_image, input_point, input_label = get_dataset(batch_size)
 
     # Inference once to build the model

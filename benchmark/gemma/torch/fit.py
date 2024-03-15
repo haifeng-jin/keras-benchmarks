@@ -19,10 +19,6 @@ def run(batch_size=benchmark.GEMMA_FIT_BATCH_SIZE):
     model = AutoModelForCausalLM.from_pretrained(
         preset, torch_dtype=torch_utils.get_torch_dtype(benchmark.FLOAT_A100)
     ).cuda()
-    # If using torch.compile(), it raises an error of
-    # TypeError: object of type 'NoneType' has no len()
-    # So commented out the following line.
-    # model = torch.compile(model)
     config = LoraConfig(r=4)
     model = get_peft_model(model, config)
 
@@ -30,6 +26,9 @@ def run(batch_size=benchmark.GEMMA_FIT_BATCH_SIZE):
         output_dir="test_trainer",
         per_device_train_batch_size=batch_size,
         num_train_epochs=1.0,
+        # Disable torch compile. Otherwise, it would become extremely slow.
+        # torch_compile=True,
+        # torch_compile_mode=torch_utils.COMPILE_MODE,
         max_steps=benchmark.NUM_STEPS + 1,
     )
 

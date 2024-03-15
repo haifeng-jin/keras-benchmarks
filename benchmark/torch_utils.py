@@ -13,6 +13,8 @@ TORCH_DTYPES = {
     "float32": torch.float32,
 }
 
+COMPILE_MODE = "reduce-overhead"
+
 
 class TimingCallback(TrainerCallback):
     def __init__(self):

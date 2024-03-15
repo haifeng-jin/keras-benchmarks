@@ -4,6 +4,7 @@ import segment_anything
 import torch
 
 import benchmark
+from benchmark import torch_utils
 
 HUGE_URL = (
     "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth"
@@ -33,7 +34,7 @@ def get_dataset(batch_size):
 
 
 def train(model, input_image, y_true):
-    loss_fn = torch.nn.MSELoss()
+    loss_fn = torch.compile(torch.nn.MSELoss(), mode=torch_utils.COMPILE_MODE)
     optimizer = torch.optim.Adam(model.parameters())
 
     optimizer.zero_grad()
@@ -57,7 +58,7 @@ def train(model, input_image, y_true):
 def run(batch_size=benchmark.SAM_FIT_BATCH_SIZE):
     benchmark.download_file(URL, LOCAL)
     model = build_sam(checkpoint=LOCAL).cuda()
-    model = torch.compile(model)
+    model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
     input_image, y_true = get_dataset(batch_size)
 
     return train(model.image_encoder, input_image, y_true)

@@ -14,6 +14,42 @@ Scripts for Keras 3 benchmarking.
 Refer to the text files under `requirements` directory for more detailed on
 Python package versions for each framework.
 
+## Permission setups
+
+### HuggingFace setup
+
+On the [HuggingFace Gemma model page](https://huggingface.co/google/gemma-7b),
+make sure you have accepted the license near the top of the page.
+
+```shell
+pip install --upgrade huggingface_hub
+```
+
+```shell
+huggingface-cli login
+```
+
+It may require you to input a token.
+[More information about tokens.](https://huggingface.co/docs/hub/en/security-tokens)
+
+
+### Kaggle setup
+
+On the [Kaggle Gemma model page](https://www.kaggle.com/models/keras/gemma),
+make sure you have accepted the license near the top of the page.
+
+Sign in to Kaggle and go to `Settings > API > Create New Token`. After clicking,
+it will download a `kaggle.json` file.
+
+In the file, you will find your username and key. Append the following lines to
+your `~/.bashrc` file. Make sure you replace the `<your_username>` and
+`<your_key>` with the ones you found in `kaggle.json`.
+
+```shell
+export KAGGLE_USERNAME=<your_username>
+export KAGGLE_KEY=<your_key>
+```
+
 ## Running the benchmarks
 
 First, change directory to the root directory of the repository.
