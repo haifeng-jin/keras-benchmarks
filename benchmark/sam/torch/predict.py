@@ -52,20 +52,20 @@ def inference(model, input_image, input_point, input_label):
 def run(batch_size=benchmark.SAM_BATCH_SIZE):
     benchmark.download_file(URL, LOCAL)
     model = build_sam(checkpoint=LOCAL).cuda()
-    model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
     input_image, input_point, input_label = get_dataset(batch_size)
+    inference_fn = torch.compile(inference, mode=torch_utils.COMPILE_MODE)
 
     # Inference once to build the model
-    inference(model, input_image, input_point, input_label)
+    inference_fn(model, input_image, input_point, input_label)
 
     start_time = time.time()
     for i in range(benchmark.NUM_STEPS + 1):
-        inference(model, input_image, input_point, input_label)
+        inference_fn(model, input_image, input_point, input_label)
     end_time = time.time()
     total_time = end_time - start_time
 
     start_time = time.time()
-    inference(model, input_image, input_point, input_label)
+    inference_fn(model, input_image, input_point, input_label)
     end_time = time.time()
     total_time -= end_time - start_time
 
