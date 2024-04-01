@@ -23,8 +23,10 @@ def run(batch_size=benchmark.BERT_FIT_BATCH_SIZE):
         per_device_train_batch_size=batch_size,
         num_train_epochs=1.0,
         max_steps=benchmark.NUM_STEPS + 1,
-        torch_compile=True,
-        torch_compile_mode=torch_utils.COMPILE_MODE,
+        torch_compile=torch_utils.use_compile(),
+        torch_compile_mode=(
+            torch_utils.COMPILE_MODE if torch_utils.use_compile() else None
+        ),
     )
 
     timing_callback = torch_utils.TimingCallback()

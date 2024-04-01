@@ -1,3 +1,4 @@
+import os
 import random
 import time
 
@@ -133,3 +134,7 @@ def get_train_dataset_for_text_gen(tokenizer, batch_size, seq_len):
     )
 
     return tokenized_dataset
+
+
+def use_compile():
+    return os.environ.get("TORCH_COMPILE", "0") == "1"

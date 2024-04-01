@@ -36,7 +36,8 @@ def run(batch_size=benchmark.SD_BATCH_SIZE):
     model = StableDiffusionPipeline.from_pretrained(
         "CompVis/stable-diffusion-v1-4"
     ).to("cuda")
-    model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
+    if torch_utils.use_compile():
+        model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
     return inference(model, batch_size=batch_size)
 
 
