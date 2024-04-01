@@ -26,9 +26,10 @@ def run(batch_size=benchmark.GEMMA_FIT_BATCH_SIZE):
         output_dir="test_trainer",
         per_device_train_batch_size=batch_size,
         num_train_epochs=1.0,
-        # Disable torch compile. Otherwise, it would become extremely slow.
-        # torch_compile=True,
-        # torch_compile_mode=torch_utils.COMPILE_MODE,
+        torch_compile=torch_utils.use_compile(),
+        torch_compile_mode=(
+            torch_utils.COMPILE_MODE if torch_utils.use_compile() else None
+        ),
         max_steps=benchmark.NUM_STEPS + 1,
     )
 

@@ -11,7 +11,8 @@ def run(batch_size=benchmark.MISTRAL_BATCH_SIZE):
     model = AutoModelForCausalLM.from_pretrained(
         preset, torch_dtype=torch_utils.get_torch_dtype(benchmark.FLOAT_A100)
     ).cuda()
-    model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
+    if torch_utils.use_compile():
+        model = torch.compile(model, mode=torch_utils.COMPILE_MODE)
     tokenizer = AutoTokenizer.from_pretrained(preset)
     tokenizer.pad_token = tokenizer.eos_token
 

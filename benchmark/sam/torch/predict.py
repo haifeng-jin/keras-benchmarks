@@ -53,7 +53,11 @@ def run(batch_size=benchmark.SAM_BATCH_SIZE):
     benchmark.download_file(URL, LOCAL)
     model = build_sam(checkpoint=LOCAL).cuda()
     input_image, input_point, input_label = get_dataset(batch_size)
-    inference_fn = torch.compile(inference, mode=torch_utils.COMPILE_MODE)
+    inference_fn = inference
+    if torch_utils.use_compile():
+        inference_fn = torch.compile(
+            inference_fn, mode=torch_utils.COMPILE_MODE
+        )
 
     # Inference once to build the model
     inference_fn(model, input_image, input_point, input_label)
