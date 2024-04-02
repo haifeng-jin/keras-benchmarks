@@ -30,7 +30,7 @@ def run(batch_size=benchmark.MISTRAL_FIT_BATCH_SIZE):
         torch_compile_mode=(
             torch_utils.COMPILE_MODE if torch_utils.use_compile() else None
         ),
-        max_steps=benchmark.NUM_STEPS + 1,
+        max_steps=benchmark.NUM_STEPS + 2,
     )
 
     timing_callback = torch_utils.TimingCallback()

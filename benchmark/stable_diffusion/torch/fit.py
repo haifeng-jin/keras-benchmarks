@@ -21,6 +21,7 @@ def train(model, input_image, y_true):
         train_fn = torch.compile(train_fn, mode=torch_utils.COMPILE_MODE)
 
     train_fn(model, input_image, y_true)
+    train_fn(model, input_image, y_true)
 
     start_time = time.time()
     for _ in range(benchmark.NUM_STEPS):

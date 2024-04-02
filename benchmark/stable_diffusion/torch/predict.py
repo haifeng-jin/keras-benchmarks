@@ -13,6 +13,7 @@ def inference(model, batch_size):
 
     # Generate once to build the model.
     model(prompts, height=512, width=512, num_inference_steps=1)
+    model(prompts, height=512, width=512, num_inference_steps=1)
 
     start_time = time.time()
     model(

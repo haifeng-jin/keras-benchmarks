@@ -25,16 +25,16 @@ class TimingCallback(TrainerCallback):
 
     def on_step_begin(self, args, state, control, **kwargs):
         # Record start time only once at the beginning of the second step
-        # Steps are [0, 100].
-        if state.global_step == 1 and self.start_time is None:
+        # Steps are [0, 101].
+        if state.global_step == 2 and self.start_time is None:
             self.start_time = time.time()
         super().on_step_begin(args, state, control, **kwargs)
 
     def on_step_end(self, args, state, control, **kwargs):
         super().on_step_end(args, state, control, **kwargs)
         # Record end time at the end of the last step
-        # Steps are [0, 100].
-        if state.global_step == benchmark.NUM_STEPS:
+        # Steps are [0, 101].
+        if state.global_step == benchmark.NUM_STEPS + 1:
             self.end_time = time.time()
 
 
@@ -60,7 +60,8 @@ def generate(
         )
         tokenizer.decode(outputs[0])
 
-    # Generate once to build the model.
+    # Generate twice to build the model.
+    generate_once()
     generate_once()
 
     start_time = time.time()
