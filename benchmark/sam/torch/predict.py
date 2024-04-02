@@ -59,7 +59,8 @@ def run(batch_size=benchmark.SAM_BATCH_SIZE):
             inference_fn, mode=torch_utils.COMPILE_MODE
         )
 
-    # Inference once to build the model
+    # Inference twice to build the model
+    inference_fn(model, input_image, input_point, input_label)
     inference_fn(model, input_image, input_point, input_label)
 
     start_time = time.time()

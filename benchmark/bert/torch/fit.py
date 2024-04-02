@@ -22,7 +22,7 @@ def run(batch_size=benchmark.BERT_FIT_BATCH_SIZE):
         output_dir="test_trainer",
         per_device_train_batch_size=batch_size,
         num_train_epochs=1.0,
-        max_steps=benchmark.NUM_STEPS + 1,
+        max_steps=benchmark.NUM_STEPS + 2,
         torch_compile=torch_utils.use_compile(),
         torch_compile_mode=(
             torch_utils.COMPILE_MODE if torch_utils.use_compile() else None

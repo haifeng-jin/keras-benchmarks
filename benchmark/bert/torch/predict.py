@@ -31,7 +31,8 @@ def run(batch_size=benchmark.BERT_BATCH_SIZE):
 
     trainer = Trainer(model=model, args=training_args)
 
-    # Predict once to build the model.
+    # Predict twice to build the model.
+    trainer.predict(dataset.select(list(range(batch_size))))
     trainer.predict(dataset.select(list(range(batch_size))))
 
     start_time = time.time()
