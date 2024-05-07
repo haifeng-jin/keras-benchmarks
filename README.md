@@ -2,12 +2,10 @@
 Scripts for Keras 3 benchmarking.
 
 ## Hardware
-* Google Cloud Platform
-* Compute Engine
-* Machine type: a2-highgpu-1g
-* Host RAM: 85GB
-* GPUs: 1 x NVIDIA A100
-* GPU memory: 40GB
+* UNC Nabu1
+* Host RAM: 64GB
+* GPUs: 1 x NVIDIA A30
+* GPU memory: 25GB
 
 ## Software
 * Python 3.10
@@ -52,34 +50,114 @@ export KAGGLE_KEY=<your_key>
 
 ## Running the benchmarks
 
-First, change directory to the root directory of the repository.
+First, build the needed images with 
 
 ```bash
-cd keras-benchmarking/
+bash shell/build.sh
 ```
 
-Then, create Python vritual environments for all the frameworks under
-`~/.venv/`. Make sure you have `pip` and `venv` installed before running the
-script.
+That will create dedicated docker images with their python environments to run.
+
+Then start docker compose with the metrics stats for monitoring.
 
 ```bash
-bash shell/install.sh
-```
+docker-compose -f metrics/stack/docker-compose.yml up -d
+``` 
 
-To run the benchmarks, you can run the following script.
+Then you can run each docker image individually, as they need exclusivity on the GPU resources.
 
+For keras-torch
 ```bash
-bash shell/run.sh
+docker run -v /users/jpmarshall/repos/keras-benchmarks/cached_models:/root/.cache/kagglehub/models/keras \
+  --name keras-torch \
+  -v /users/jpmarshall/repos/keras-benchmarks/benchmark/:/benchmark \
+  -v /users/jpmarshall/repos/keras-benchmarks/configs/:/configs \
+  -v /users/jpmarshall/repos/keras-benchmarks/shell/:/shell \
+  -d --gpus device=GPU-0d58720e-34f6-3fd5-510d-e6d5249693f4 keras-torch
 ```
 
-If you want to remove all the virtual environments afterwards or if you
-encounter an error want to clean up the half-way installed dependencies, you can
-run `shell/cleanup.sh`.
+For keras-jax
+```bash
+docker run -v /users/jpmarshall/repos/keras-benchmarks/cached_models:/root/.cache/kagglehub/models/keras \
+  --name keras-jax \
+   -v /users/jpmarshall/repos/keras-benchmarks/benchmark/:/benchmark \
+   -v /users/jpmarshall/repos/keras-benchmarks/configs/:/configs \
+   -v /users/jpmarshall/repos/keras-benchmarks/shell/:/shell \
+   -d --gpus device=GPU-0d58720e-34f6-3fd5-510d-e6d5249693f4 keras-jax 
+```
+
+For keras-tensorflow
+```bash
+docker run -v /users/jpmarshall/repos/keras-benchmarks/cached_models:/root/.cache/kagglehub/models/keras \
+  --name keras-tensorflow \
+  -v /users/jpmarshall/repos/keras-benchmarks/benchmark/:/benchmark \
+  -v /users/jpmarshall/repos/keras-benchmarks/configs/:/configs \
+  -v /users/jpmarshall/repos/keras-benchmarks/shell/:/shell \
+  -d --gpus device=GPU-0d58720e-34f6-3fd5-510d-e6d5249693f4 keras-tensorflow 
+```
+
+For tensorflow
+```bash
+docker run -v /users/jpmarshall/repos/keras-benchmarks/cached_models:/root/.cache/kagglehub/models/keras \
+  --name tensorflow \
+  -v /users/jpmarshall/repos/keras-benchmarks/benchmark/:/benchmark \
+  -v /users/jpmarshall/repos/keras-benchmarks/configs/:/configs \
+  -v /users/jpmarshall/repos/keras-benchmarks/shell/:/shell \
+  -d --gpus device=GPU-0d58720e-34f6-3fd5-510d-e6d5249693f4 tensorflow 
+```
+
+For torch
+```bash
+docker run -v /users/jpmarshall/repos/keras-benchmarks/cached_models:/root/.cache/kagglehub/models/keras \
+  --name torch \
+  -v /users/jpmarshall/repos/keras-benchmarks/benchmark/:/benchmark \
+  -v /users/jpmarshall/repos/keras-benchmarks/configs/:/configs \
+  -v /users/jpmarshall/repos/keras-benchmarks/shell/:/shell \
+  -d --gpus device=GPU-0d58720e-34f6-3fd5-510d-e6d5249693f4 torch 
+```
+
+Any of those commands will deploy the image in a container with access to the GPU, in an idle state.
+The volumes keep benchmark, configs and shell script folders updated with local. 
+The cached models are kept in that volume, so you only download them once from the internet
+
+From there, you need to exec to the container and run the benchmark.
+
+Keras Torch
+```bash
+docker exec -it keras-torch /bin/bash
+bash shell/run.sh kears-torch
+```
+
+Keras Jax
+```bash
+docker exec -it keras-jax /bin/bash
+bash shell/run.sh keras-jax
+```
+
+Keras Tensorflow
+```bash
+docker exec -it keras-tensorflow /bin/bash
+bash shell/run.sh keras-tensorflow
+```
+
+Tensorflow
+```bash
+docker exec -it tensorflow /bin/bash
+bash shell/run.sh tensorflow
+```
+
+Torch
+```bash
+docker exec -it torch /bin/bash
+bash shell/run.sh torch
+```
+
+
 
 ## Directories
 
 * `benchmark` contains the Python code for benchmarking each model. It is
-  structured as a Python package. I needs `pip install -e .` before using. Most
+  structured as a Python package. It needs `pip install -e .` before using. Most
   of the settings are in `benchmark/__init__.py`. You can run a single benchmark
   by calling each script, for example,
   `python benchmark/gemma/keras/predict.py results.txt`

@@ -9,12 +9,19 @@ fi
 env_name=$1
 venv_path=~/.venv
 output_file=results.txt
+events_file=events.csv
 
 if [ -e "$output_file" ]; then
     rm -f "$output_file"
 fi
 
-export LD_LIBRARY_PATH=
+if [ -e "$events_file" ]; then
+    rm -f "$events_file"
+fi
+
+get_timestamp() {
+  date +"%s" # current time
+}
 
 models=(
     "bert"
@@ -45,26 +52,41 @@ fi
 
 printf "# Benchmarking $env_name\n\n" | tee -a $output_file
 printf "compiled\n\n"
+
+
+printf "label,time\n" >> $events_file
+printf "INIT,$(get_timestamp)\n" >> $events_file
+
+
 if [[ $env_name == torch ]]; then
     export TORCH_COMPILE="1"
     for model_name in "${models[@]}"; do
         printf "$model_name:\n" | tee -a $output_file
+
         printf "fit:\n" | tee -a $output_file
         python benchmark/$model_name/$file_name/fit.py $output_file
+        printf "${model_name}_FIT,$(get_timestamp)\n" >> $events_file
+
         printf "predict:\n" | tee -a $output_file
         python benchmark/$model_name/$file_name/predict.py $output_file
+        printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $events_file
+
         printf "\n\n" | tee -a $output_file
     done
     export TORCH_COMPILE="0"
     printf "not compiled\n\n"
 fi
 
+
 for model_name in "${models[@]}"; do
     printf "$model_name:\n" | tee -a $output_file
     printf "fit:\n" | tee -a $output_file
     python benchmark/$model_name/$file_name/fit.py $output_file
+    printf "${model_name}_FIT,$(get_timestamp)\n" >> $events_file
+
     printf "predict:\n" | tee -a $output_file
     python benchmark/$model_name/$file_name/predict.py $output_file
+    printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $events_file
     printf "\n\n" | tee -a $output_file
 done
 
