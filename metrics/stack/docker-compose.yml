@@ -1,0 +1,55 @@
+version: "3"
+services:
+  cadvisor:
+    container_name: cadvisor
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8081:8080"
+    command: ["--store_container_labels=false", "--docker_only=true"]
+    volumes: 
+      - "/:/rootfs"
+      - "/var/run:/var/run"
+      - "/sys:/sys"
+      - "/var/lib/docker/:/var/lib/docker"
+      - "/dev/disk/:/dev/disk"
+      #- "/etc/localtime:/etc/localtime:ro"
+    privileged: true
+    devices: 
+      - "/dev/kmsg"
+    environment:
+      - "TZ=America/Argentina/Buenos_Aires" 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes: 
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml"
+      #- "/etc/localtime:/etc/localtime:ro"
+    privileged: true
+    depends_on:
+      - cadvisor
+    environment:
+      - "TZ=America/Argentina/Buenos_Aires" 
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - DS_PROMETHEUS=prometheus
+      - "TZ=America/Argentina/Buenos_Aires" 
+    volumes: 
+      - "grafana-data:/var/lib/grafana"
+      - "./datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml"
+      - "./dashboard.json:/var/lib/grafana/dashboards/dashboard.json"
+      - "./default.yaml:/etc/grafana/provisioning/dashboards/default.yaml"
+      #- "/etc/localtime:/etc/localtime:ro"
+    privileged: true
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana-data:

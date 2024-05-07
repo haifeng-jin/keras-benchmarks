@@ -1,0 +1,10 @@
+FROM cuda-python310:latest
+
+RUN ln -sf /usr/local/bin/python3.10 /usr/local/bin/python \
+    && ln -sf /usr/local/bin/pip3.10 /usr/local/bin/pip
+
+COPY . .
+
+RUN bash shell/install.sh tensorflow
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
