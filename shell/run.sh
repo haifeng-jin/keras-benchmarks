@@ -64,12 +64,20 @@ if [[ $env_name == torch ]]; then
         printf "$model_name:\n" | tee -a $output_file
 
         printf "fit:\n" | tee -a $output_file
+        python metrics/nvidia_metrics.py $env_name "${model_name}_compiled" fit &
+        PID_PYTHON=$!
         python benchmark/$model_name/$file_name/fit.py $output_file
         printf "${model_name}_FIT,$(get_timestamp)\n" >> $events_file
+        kill $PID_PYTHON
+        wait $PID_PYTHON
 
         printf "predict:\n" | tee -a $output_file
+        python metrics/nvidia_metrics.py $env_name "${model_name}_compiled" predict &
+        PID_PYTHON=$!
         python benchmark/$model_name/$file_name/predict.py $output_file
         printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $events_file
+        kill $PID_PYTHON
+        wait $PID_PYTHON
 
         printf "\n\n" | tee -a $output_file
     done
@@ -80,13 +88,23 @@ fi
 
 for model_name in "${models[@]}"; do
     printf "$model_name:\n" | tee -a $output_file
+    
     printf "fit:\n" | tee -a $output_file
+    python metrics/nvidia_metrics.py $env_name $model_name fit &
+    PID_PYTHON=$!
     python benchmark/$model_name/$file_name/fit.py $output_file
     printf "${model_name}_FIT,$(get_timestamp)\n" >> $events_file
+    kill $PID_PYTHON
+    wait $PID_PYTHON
 
     printf "predict:\n" | tee -a $output_file
+    python metrics/nvidia_metrics.py $env_name $model_name predict &
+    PID_PYTHON=$!
     python benchmark/$model_name/$file_name/predict.py $output_file
     printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $events_file
+    kill $PID_PYTHON
+    wait $PID_PYTHON
+
     printf "\n\n" | tee -a $output_file
 done
 
