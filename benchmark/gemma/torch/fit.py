@@ -10,7 +10,7 @@ from benchmark import torch_utils
 
 
 def run(batch_size=benchmark.GEMMA_FIT_BATCH_SIZE):
-    preset = "google/gemma-7b"
+    preset = "google/gemma-2b"
     tokenizer = AutoTokenizer.from_pretrained(preset)
     tokenizer.pad_token = tokenizer.eos_token
     dataset = torch_utils.get_train_dataset_for_text_gen(

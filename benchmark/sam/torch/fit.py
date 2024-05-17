@@ -22,9 +22,9 @@ BASE_URL = (
 BASE_BUILD = segment_anything.build_sam_vit_b
 BASE_LOCAL = "/tmp/sam_b.pth"
 
-URL = HUGE_URL
-LOCAL = HUGE_LOCAL
-build_sam = HUGE_BUILD
+URL = BASE_URL
+LOCAL = BASE_LOCAL
+build_sam = BASE_BUILD
 
 
 def get_dataset(batch_size):

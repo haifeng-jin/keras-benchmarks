@@ -7,7 +7,7 @@ from benchmark import torch_utils
 
 
 def run(batch_size=benchmark.GEMMA_BATCH_SIZE):
-    preset = "google/gemma-7b"
+    preset = "google/gemma-2b"
     model = AutoModelForCausalLM.from_pretrained(
         preset, torch_dtype=torch_utils.get_torch_dtype(benchmark.FLOAT_A100)
     ).cuda()
