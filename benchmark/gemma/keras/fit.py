@@ -7,7 +7,7 @@ from benchmark import keras_utils
 
 def get_model():
     model = keras_nlp.models.GemmaCausalLM.from_preset(
-        "gemma_7b_en",
+        "gemma_2b_en",
         preprocessor=None,
     )
     model.backbone.enable_lora(rank=4)

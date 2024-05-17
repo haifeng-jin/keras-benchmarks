@@ -27,7 +27,7 @@ def get_dataset(batch_size):
 
 def run(batch_size=benchmark.SAM_BATCH_SIZE):
     dataset = get_dataset(batch_size)
-    model = keras_cv.models.SegmentAnythingModel.from_preset("sam_huge_sa1b")
+    model = keras_cv.models.SegmentAnythingModel.from_preset("sam_base_sa1b")
     backbone = model.backbone
     backbone.compile(jit_compile=keras_utils.use_jit())
     return keras_utils.predict(model, dataset)

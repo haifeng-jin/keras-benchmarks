@@ -10,7 +10,7 @@ def run(batch_size=benchmark.GEMMA_BATCH_SIZE):
         keras.config.set_dtype_policy(benchmark.FLOAT_A100)
     else:
         keras.mixed_precision.set_global_policy(benchmark.FLOAT_A100)
-    model = keras_nlp.models.GemmaCausalLM.from_preset("gemma_7b_en")
+    model = keras_nlp.models.GemmaCausalLM.from_preset("gemma_2b_en")
     model.compile(sampler="greedy")
     return keras_utils.generate(
         model=model,
