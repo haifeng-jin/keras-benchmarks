@@ -59,7 +59,7 @@ printf "compiled\n\n"
 
 if [[ $env_name == torch ]]; then
     export TORCH_COMPILE="1"
-    $compiled_events_file=compiled_events.csv
+    compiled_events_file=compiled_events.csv
     if [ -e "$compiled_events_file" ]; then
       rm -f "$compiled_events_file"
     fi
