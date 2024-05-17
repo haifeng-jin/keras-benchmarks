@@ -54,28 +54,34 @@ printf "# Benchmarking $env_name\n\n" | tee -a $output_file
 printf "compiled\n\n"
 
 
-printf "label,time\n" >> $events_file
-printf "INIT,$(get_timestamp)\n" >> $events_file
+
 
 
 if [[ $env_name == torch ]]; then
     export TORCH_COMPILE="1"
+    $compiled_events_file=compiled_events.csv
+    if [ -e "$compiled_events_file" ]; then
+      rm -f "$compiled_events_file"
+    fi
+
+    printf "label,time\n" >> $compiled_events_file
+    printf "INIT,$(get_timestamp)\n" >> $compiled_events_file
     for model_name in "${models[@]}"; do
         printf "$model_name:\n" | tee -a $output_file
 
         printf "fit:\n" | tee -a $output_file
-        python metrics/nvidia_metrics.py $env_name "${model_name}_compiled" fit &
+        python metrics/nvidia_metrics.py "${env_name}_compiled" $model_name fit &
         PID_PYTHON=$!
         python benchmark/$model_name/$file_name/fit.py $output_file
-        printf "${model_name}_FIT,$(get_timestamp)\n" >> $events_file
+        printf "${model_name}-compiled_FIT,$(get_timestamp)\n" >> $compiled_events_file
         kill $PID_PYTHON
         wait $PID_PYTHON
 
         printf "predict:\n" | tee -a $output_file
-        python metrics/nvidia_metrics.py $env_name "${model_name}_compiled" predict &
+        python metrics/nvidia_metrics.py "${env_name}_compiled" $model_name predict &
         PID_PYTHON=$!
         python benchmark/$model_name/$file_name/predict.py $output_file
-        printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $events_file
+        printf "${model_name}_PREDICT,$(get_timestamp)\n" >> $compiled_events_file
         kill $PID_PYTHON
         wait $PID_PYTHON
 
@@ -85,6 +91,8 @@ if [[ $env_name == torch ]]; then
     printf "not compiled\n\n"
 fi
 
+printf "label,time\n" >> $events_file
+printf "INIT,$(get_timestamp)\n" >> $events_file
 
 for model_name in "${models[@]}"; do
     printf "$model_name:\n" | tee -a $output_file
