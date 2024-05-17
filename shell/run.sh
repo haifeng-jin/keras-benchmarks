@@ -73,7 +73,7 @@ if [[ $env_name == torch ]]; then
         python metrics/nvidia_metrics.py "${env_name}_compiled" $model_name fit &
         PID_PYTHON=$!
         python benchmark/$model_name/$file_name/fit.py $output_file
-        printf "${model_name}-compiled_FIT,$(get_timestamp)\n" >> $compiled_events_file
+        printf "${model_name}_FIT,$(get_timestamp)\n" >> $compiled_events_file
         kill $PID_PYTHON
         wait $PID_PYTHON
 
