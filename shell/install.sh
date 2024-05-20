@@ -1,7 +1,6 @@
 #!/bin/bash
 
 venvs=(
-    "torch"
     "tensorflow"
     "keras-tensorflow"
     "keras-jax"

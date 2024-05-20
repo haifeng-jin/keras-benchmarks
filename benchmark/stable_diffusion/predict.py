@@ -3,11 +3,11 @@ import time
 import keras_cv
 
 import benchmark
-from benchmark import keras_utils
+from benchmark import utils
 
 
 def run(batch_size=benchmark.SD_BATCH_SIZE):
-    model = keras_cv.models.StableDiffusion(jit_compile=keras_utils.use_jit())
+    model = keras_cv.models.StableDiffusion(jit_compile=utils.use_jit())
     prompts = "a photograph of an astronaut riding a horse"
 
     # Build the model by running.

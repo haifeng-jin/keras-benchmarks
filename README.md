@@ -16,23 +16,6 @@ Python package versions for each framework.
 
 ## Permission setups
 
-### HuggingFace setup
-
-On the [HuggingFace Gemma model page](https://huggingface.co/google/gemma-7b),
-make sure you have accepted the license near the top of the page.
-
-```shell
-pip install --upgrade huggingface_hub
-```
-
-```shell
-huggingface-cli login
-```
-
-It may require you to input a token.
-[More information about tokens.](https://huggingface.co/docs/hub/en/security-tokens)
-
-
 ### Kaggle setup
 
 On the [Kaggle Gemma model page](https://www.kaggle.com/models/keras/gemma),
@@ -82,7 +65,7 @@ run `shell/cleanup.sh`.
   structured as a Python package. I needs `pip install -e .` before using. Most
   of the settings are in `benchmark/__init__.py`. You can run a single benchmark
   by calling each script, for example,
-  `python benchmark/gemma/keras/predict.py results.txt`
+  `python benchmark/gemma/predict.py results.txt`
 * `shell` contains all the shell scripts for benchmarking.
 * `requirements` contains the version requirements for the PyPI packages in the
   dependencies.

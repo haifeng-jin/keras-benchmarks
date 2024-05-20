@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 import benchmark
-from benchmark import keras_utils
+from benchmark import utils
 
 
 def get_dataset(batch_size):
@@ -29,8 +29,8 @@ def run(batch_size=benchmark.SAM_BATCH_SIZE):
     dataset = get_dataset(batch_size)
     model = keras_cv.models.SegmentAnythingModel.from_preset("sam_huge_sa1b")
     backbone = model.backbone
-    backbone.compile(jit_compile=keras_utils.use_jit())
-    return keras_utils.predict(model, dataset)
+    backbone.compile(jit_compile=utils.use_jit())
+    return utils.predict(model, dataset)
 
 
 if __name__ == "__main__":
