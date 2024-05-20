@@ -40,7 +40,7 @@ def append_to_file(file_path, content):
 
 def benchmark(run):
     if len(sys.argv) not in (2, 3):
-        print("Usage: python bert/keras/fit.py <file_path> [batch_size]")
+        print("Usage: python bert/fit.py <file_path> [batch_size]")
     else:
         if len(sys.argv) == 3:
             batch_size = int(sys.argv[2])

@@ -2,14 +2,14 @@ import keras
 import keras_nlp
 
 import benchmark
-from benchmark import keras_utils
+from benchmark import utils
 
 
 def run(batch_size=benchmark.BERT_FIT_BATCH_SIZE):
     preprocessor = keras_nlp.models.BertPreprocessor.from_preset(
         "bert_base_en", sequence_length=benchmark.BERT_SEQ_LENGTH
     )
-    dataset = keras_utils.get_train_dataset_for_text_classification(
+    dataset = utils.get_train_dataset_for_text_classification(
         preprocessor=preprocessor,
         batch_size=batch_size,
         seq_len=benchmark.BERT_SEQ_LENGTH,
@@ -22,10 +22,10 @@ def run(batch_size=benchmark.BERT_FIT_BATCH_SIZE):
     model.compile(
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         optimizer=keras.optimizers.AdamW(),
-        jit_compile=keras_utils.use_jit(),
+        jit_compile=utils.use_jit(),
     )
 
-    return keras_utils.fit(model, dataset)
+    return utils.fit(model, dataset)
 
 
 if __name__ == "__main__":

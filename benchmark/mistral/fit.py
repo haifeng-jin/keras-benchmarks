@@ -2,7 +2,7 @@ import keras
 import keras_nlp
 
 import benchmark
-from benchmark import keras_utils
+from benchmark import utils
 
 
 def get_model():
@@ -23,7 +23,7 @@ def run(batch_size=benchmark.MISTRAL_FIT_BATCH_SIZE):
         "mistral_7b_en",
         sequence_length=benchmark.MISTRAL_SEQ_LENGTH,
     )
-    dataset = keras_utils.get_train_dataset_for_text_gen(
+    dataset = utils.get_train_dataset_for_text_gen(
         preprocessor, batch_size, seq_len=benchmark.MISTRAL_SEQ_LENGTH
     )
     model = get_model()
@@ -31,9 +31,9 @@ def run(batch_size=benchmark.MISTRAL_FIT_BATCH_SIZE):
     model.compile(
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         optimizer=keras.optimizers.AdamW(),
-        jit_compile=keras_utils.use_jit(),
+        jit_compile=utils.use_jit(),
     )
-    return keras_utils.fit(model, dataset)
+    return utils.fit(model, dataset)
 
 
 if __name__ == "__main__":

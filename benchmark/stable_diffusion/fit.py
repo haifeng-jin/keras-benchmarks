@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 import benchmark
-from benchmark import keras_utils
+from benchmark import utils
 
 
 def get_train_dataset(batch_size):
@@ -24,12 +24,12 @@ def get_train_dataset(batch_size):
 
 def run(batch_size=benchmark.SD_FIT_BATCH_SIZE):
     train_dataset = get_train_dataset(batch_size=batch_size)
-    model = keras_cv.models.StableDiffusion(jit_compile=keras_utils.use_jit())
+    model = keras_cv.models.StableDiffusion(jit_compile=utils.use_jit())
     backbone = keras.Model(
         model.image_encoder.inputs, model.image_encoder.layers[-3].output
     )
     backbone.compile(loss="mse", optimizer="adam")
-    return keras_utils.fit(backbone, train_dataset)
+    return utils.fit(backbone, train_dataset)
 
 
 if __name__ == "__main__":
