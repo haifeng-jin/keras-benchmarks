@@ -91,7 +91,24 @@ def query_metric_values(metric_names, start_time, end_time, container):
 def postprocess_and_upload(values, events, framework):
     metrics_per_label = groupLabels(events, values)
 
-    # print(metrics_per_label)
+    #print(metrics_per_label)
+
+    # Prepare the CSV file
+    with open('metrics.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # Write the header
+        writer.writerow(['framework', 'model_action', 'time', 'container_memory_usage_bytes', 'container_cpu_usage_seconds_total'])
+
+        # Iterate through the metrics and write rows
+        for (model_action, _), data in metrics_per_label:
+            memory_usage = data['container_memory_usage_bytes']
+            cpu_usage = data['container_cpu_usage_seconds_total']
+
+            # Assuming memory_usage and cpu_usage have the same length and corresponding entries
+            for mem, cpu in zip(memory_usage, cpu_usage):
+                time, mem_value = mem
+                _, cpu_value = cpu
+                writer.writerow([framework, model_action, time, mem_value, cpu_value])
 
     stats_per_action = [generate_stats(action[0], action[1]) for action in metrics_per_label]
 
